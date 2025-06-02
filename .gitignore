@@ -1,0 +1,32 @@
+# Dart & Flutter
+.dart_tool/
+.packages
+.pub/
+build/
+coverage/
+.flutter-plugins
+.flutter-plugins-dependencies
+.melos_tool/
+.melos_workspace/
+.idea/
+.vscode/
+*.iml
+
+# FVM
+.fvm/
+.flutter/
+
+# Generated files
+*.g.dart
+
+# macOS
+.DS_Store
+
+# Example app build outputs (if you have an example/)
+example/build/
+
+# Test outputs
+coverage/
+
+# Others
+*.log
