@@ -1,28 +1,28 @@
 name: subman
 description: A simple, developer-friendly subscription management library for Flutter.
-version: 0.1.0
+version: 1.0.0
 homepage: https://github.com/mikaneco/subman
 repository: https://github.com/mikaneco/subman
 issue_tracker: https://github.com/mikaneco/subman/issues
 license: MIT
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.0.0"
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: ">=3.24.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  in_app_purchase: ^3.1.7
+  in_app_purchase: ^3.2.0
   in_app_purchase_android: ^0.4.0+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
   mockito: ^5.4.6
-  build_runner: any
-  in_app_purchase_platform_interface: any
+  build_runner: ^2.4.13
+  in_app_purchase_platform_interface: ^1.4.0
 
 flutter:
 example:

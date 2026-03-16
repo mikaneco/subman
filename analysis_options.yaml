@@ -1,4 +1,15 @@
 include: package:flutter_lints/flutter.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    avoid_print: true
+    prefer_single_quotes: true
+    sort_child_properties_last: true
+    unawaited_futures: true
+    unnecessary_lambdas: true
+    prefer_is_empty: true
+    prefer_is_not_empty: true

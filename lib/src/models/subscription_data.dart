@@ -28,6 +28,26 @@ class SubscriptionData {
   });
 
   @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is SubscriptionData &&
+        other.productId == productId &&
+        other.purchaseToken == purchaseToken &&
+        other.orderId == orderId &&
+        other.purchaseDate == purchaseDate &&
+        other.platform == platform;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        productId,
+        purchaseToken,
+        orderId,
+        purchaseDate,
+        platform,
+      );
+
+  @override
   String toString() {
     return 'SubscriptionData(productId: $productId, purchaseDate: $purchaseDate, platform: $platform)';
   }

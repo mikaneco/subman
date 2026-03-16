@@ -9,6 +9,8 @@ import 'src/models/subscription_data.dart';
 import 'src/models/subscription_exception.dart';
 import 'src/models/server_client.dart';
 
+export 'src/models/server_client.dart';
+export 'src/models/subman_environment.dart';
 export 'src/models/subscription_data.dart';
 export 'src/models/subscription_exception.dart';
 export 'src/models/subscription_state.dart';

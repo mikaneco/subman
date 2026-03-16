@@ -5,7 +5,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i5;
 
-import 'package:flutter/services.dart' as _i8;
 import 'package:in_app_purchase/in_app_purchase.dart' as _i4;
 import 'package:in_app_purchase_android/billing_client_wrappers.dart' as _i3;
 import 'package:in_app_purchase_android/in_app_purchase_android.dart' as _i7;
@@ -30,26 +29,46 @@ import 'package:mockito/src/dummies.dart' as _i6;
 
 class _FakeProductDetailsResponse_0 extends _i1.SmartFake
     implements _i2.ProductDetailsResponse {
-  _FakeProductDetailsResponse_0(Object parent, Invocation parentInvocation)
-      : super(parent, parentInvocation);
+  _FakeProductDetailsResponse_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeBillingClientManager_1 extends _i1.SmartFake
     implements _i3.BillingClientManager {
-  _FakeBillingClientManager_1(Object parent, Invocation parentInvocation)
-      : super(parent, parentInvocation);
+  _FakeBillingClientManager_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakeBillingResultWrapper_2 extends _i1.SmartFake
     implements _i3.BillingResultWrapper {
-  _FakeBillingResultWrapper_2(Object parent, Invocation parentInvocation)
-      : super(parent, parentInvocation);
+  _FakeBillingResultWrapper_2(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 class _FakePurchaseVerificationData_3 extends _i1.SmartFake
     implements _i2.PurchaseVerificationData {
-  _FakePurchaseVerificationData_3(Object parent, Invocation parentInvocation)
-      : super(parent, parentInvocation);
+  _FakePurchaseVerificationData_3(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
 }
 
 /// A class which mocks [InAppPurchase].
@@ -70,41 +89,55 @@ class MockInAppPurchase extends _i1.Mock implements _i4.InAppPurchase {
   @override
   T getPlatformAddition<T extends _i2.InAppPurchasePlatformAddition?>() =>
       (super.noSuchMethod(
-        Invocation.method(#getPlatformAddition, []),
+        Invocation.method(
+          #getPlatformAddition,
+          [],
+        ),
         returnValue: _i6.dummyValue<T>(
           this,
-          Invocation.method(#getPlatformAddition, []),
+          Invocation.method(
+            #getPlatformAddition,
+            [],
+          ),
         ),
       ) as T);
 
   @override
   _i5.Future<bool> isAvailable() => (super.noSuchMethod(
-        Invocation.method(#isAvailable, []),
+        Invocation.method(
+          #isAvailable,
+          [],
+        ),
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
 
   @override
   _i5.Future<_i2.ProductDetailsResponse> queryProductDetails(
-    Set<String>? identifiers,
-  ) =>
+          Set<String>? identifiers) =>
       (super.noSuchMethod(
-        Invocation.method(#queryProductDetails, [identifiers]),
-        returnValue: _i5.Future<_i2.ProductDetailsResponse>.value(
-          _FakeProductDetailsResponse_0(
-            this,
-            Invocation.method(#queryProductDetails, [identifiers]),
-          ),
+        Invocation.method(
+          #queryProductDetails,
+          [identifiers],
         ),
+        returnValue: _i5.Future<_i2.ProductDetailsResponse>.value(
+            _FakeProductDetailsResponse_0(
+          this,
+          Invocation.method(
+            #queryProductDetails,
+            [identifiers],
+          ),
+        )),
       ) as _i5.Future<_i2.ProductDetailsResponse>);
 
   @override
-  _i5.Future<bool> buyNonConsumable({
-    required _i2.PurchaseParam? purchaseParam,
-  }) =>
+  _i5.Future<bool> buyNonConsumable(
+          {required _i2.PurchaseParam? purchaseParam}) =>
       (super.noSuchMethod(
-        Invocation.method(#buyNonConsumable, [], {
-          #purchaseParam: purchaseParam,
-        }),
+        Invocation.method(
+          #buyNonConsumable,
+          [],
+          {#purchaseParam: purchaseParam},
+        ),
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
 
@@ -114,17 +147,24 @@ class MockInAppPurchase extends _i1.Mock implements _i4.InAppPurchase {
     bool? autoConsume = true,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(#buyConsumable, [], {
-          #purchaseParam: purchaseParam,
-          #autoConsume: autoConsume,
-        }),
+        Invocation.method(
+          #buyConsumable,
+          [],
+          {
+            #purchaseParam: purchaseParam,
+            #autoConsume: autoConsume,
+          },
+        ),
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
 
   @override
   _i5.Future<void> completePurchase(_i2.PurchaseDetails? purchase) =>
       (super.noSuchMethod(
-        Invocation.method(#completePurchase, [purchase]),
+        Invocation.method(
+          #completePurchase,
+          [purchase],
+        ),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
@@ -132,19 +172,28 @@ class MockInAppPurchase extends _i1.Mock implements _i4.InAppPurchase {
   @override
   _i5.Future<void> restorePurchases({String? applicationUserName}) =>
       (super.noSuchMethod(
-        Invocation.method(#restorePurchases, [], {
-          #applicationUserName: applicationUserName,
-        }),
+        Invocation.method(
+          #restorePurchases,
+          [],
+          {#applicationUserName: applicationUserName},
+        ),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
 
   @override
   _i5.Future<String> countryCode() => (super.noSuchMethod(
-        Invocation.method(#countryCode, []),
-        returnValue: _i5.Future<String>.value(
-          _i6.dummyValue<String>(this, Invocation.method(#countryCode, [])),
+        Invocation.method(
+          #countryCode,
+          [],
         ),
+        returnValue: _i5.Future<String>.value(_i6.dummyValue<String>(
+          this,
+          Invocation.method(
+            #countryCode,
+            [],
+          ),
+        )),
       ) as _i5.Future<String>);
 }
 
@@ -175,32 +224,40 @@ class MockInAppPurchaseAndroidPlatform extends _i1.Mock
 
   @override
   _i5.Future<bool> isAvailable() => (super.noSuchMethod(
-        Invocation.method(#isAvailable, []),
+        Invocation.method(
+          #isAvailable,
+          [],
+        ),
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
 
   @override
   _i5.Future<_i2.ProductDetailsResponse> queryProductDetails(
-    Set<String>? identifiers,
-  ) =>
+          Set<String>? identifiers) =>
       (super.noSuchMethod(
-        Invocation.method(#queryProductDetails, [identifiers]),
-        returnValue: _i5.Future<_i2.ProductDetailsResponse>.value(
-          _FakeProductDetailsResponse_0(
-            this,
-            Invocation.method(#queryProductDetails, [identifiers]),
-          ),
+        Invocation.method(
+          #queryProductDetails,
+          [identifiers],
         ),
+        returnValue: _i5.Future<_i2.ProductDetailsResponse>.value(
+            _FakeProductDetailsResponse_0(
+          this,
+          Invocation.method(
+            #queryProductDetails,
+            [identifiers],
+          ),
+        )),
       ) as _i5.Future<_i2.ProductDetailsResponse>);
 
   @override
-  _i5.Future<bool> buyNonConsumable({
-    required _i2.PurchaseParam? purchaseParam,
-  }) =>
+  _i5.Future<bool> buyNonConsumable(
+          {required _i2.PurchaseParam? purchaseParam}) =>
       (super.noSuchMethod(
-        Invocation.method(#buyNonConsumable, [], {
-          #purchaseParam: purchaseParam,
-        }),
+        Invocation.method(
+          #buyNonConsumable,
+          [],
+          {#purchaseParam: purchaseParam},
+        ),
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
 
@@ -210,54 +267,75 @@ class MockInAppPurchaseAndroidPlatform extends _i1.Mock
     bool? autoConsume = true,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(#buyConsumable, [], {
-          #purchaseParam: purchaseParam,
-          #autoConsume: autoConsume,
-        }),
+        Invocation.method(
+          #buyConsumable,
+          [],
+          {
+            #purchaseParam: purchaseParam,
+            #autoConsume: autoConsume,
+          },
+        ),
         returnValue: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
 
   @override
   _i5.Future<_i3.BillingResultWrapper> completePurchase(
-    _i2.PurchaseDetails? purchase,
-  ) =>
+          _i2.PurchaseDetails? purchase) =>
       (super.noSuchMethod(
-        Invocation.method(#completePurchase, [purchase]),
-        returnValue: _i5.Future<_i3.BillingResultWrapper>.value(
-          _FakeBillingResultWrapper_2(
-            this,
-            Invocation.method(#completePurchase, [purchase]),
-          ),
+        Invocation.method(
+          #completePurchase,
+          [purchase],
         ),
+        returnValue: _i5.Future<_i3.BillingResultWrapper>.value(
+            _FakeBillingResultWrapper_2(
+          this,
+          Invocation.method(
+            #completePurchase,
+            [purchase],
+          ),
+        )),
       ) as _i5.Future<_i3.BillingResultWrapper>);
 
   @override
   _i5.Future<void> restorePurchases({String? applicationUserName}) =>
       (super.noSuchMethod(
-        Invocation.method(#restorePurchases, [], {
-          #applicationUserName: applicationUserName,
-        }),
+        Invocation.method(
+          #restorePurchases,
+          [],
+          {#applicationUserName: applicationUserName},
+        ),
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
 
   @override
   _i5.Future<String> countryCode() => (super.noSuchMethod(
-        Invocation.method(#countryCode, []),
-        returnValue: _i5.Future<String>.value(
-          _i6.dummyValue<String>(this, Invocation.method(#countryCode, [])),
+        Invocation.method(
+          #countryCode,
+          [],
         ),
+        returnValue: _i5.Future<String>.value(_i6.dummyValue<String>(
+          this,
+          Invocation.method(
+            #countryCode,
+            [],
+          ),
+        )),
       ) as _i5.Future<String>);
 
   @override
   _i5.Future<String> getCountryCode() => (super.noSuchMethod(
-        Invocation.method(#getCountryCode, []),
-        returnValue: _i5.Future<String>.value(
-          _i6.dummyValue<String>(
-            this,
-            Invocation.method(#getCountryCode, []),
-          ),
+        Invocation.method(
+          #getCountryCode,
+          [],
         ),
+        returnValue: _i5.Future<String>.value(_i6.dummyValue<String>(
+          this,
+          Invocation.method(
+            #getCountryCode,
+            [],
+          ),
+        )),
       ) as _i5.Future<String>);
 }
 
@@ -301,20 +379,29 @@ class MockPurchaseDetails extends _i1.Mock implements _i2.PurchaseDetails {
 
   @override
   set status(_i2.PurchaseStatus? _status) => super.noSuchMethod(
-        Invocation.setter(#status, _status),
+        Invocation.setter(
+          #status,
+          _status,
+        ),
         returnValueForMissingStub: null,
       );
 
   @override
   set error(_i2.IAPError? _error) => super.noSuchMethod(
-        Invocation.setter(#error, _error),
+        Invocation.setter(
+          #error,
+          _error,
+        ),
         returnValueForMissingStub: null,
       );
 
   @override
   set pendingCompletePurchase(bool? _pendingCompletePurchase) =>
       super.noSuchMethod(
-        Invocation.setter(#pendingCompletePurchase, _pendingCompletePurchase),
+        Invocation.setter(
+          #pendingCompletePurchase,
+          _pendingCompletePurchase,
+        ),
         returnValueForMissingStub: null,
       );
 }
@@ -330,7 +417,10 @@ class MockProductDetails extends _i1.Mock implements _i2.ProductDetails {
   @override
   String get id => (super.noSuchMethod(
         Invocation.getter(#id),
-        returnValue: _i6.dummyValue<String>(this, Invocation.getter(#id)),
+        returnValue: _i6.dummyValue<String>(
+          this,
+          Invocation.getter(#id),
+        ),
       ) as String);
 
   @override
@@ -361,9 +451,10 @@ class MockProductDetails extends _i1.Mock implements _i2.ProductDetails {
       ) as String);
 
   @override
-  double get rawPrice =>
-      (super.noSuchMethod(Invocation.getter(#rawPrice), returnValue: 0.0)
-          as double);
+  double get rawPrice => (super.noSuchMethod(
+        Invocation.getter(#rawPrice),
+        returnValue: 0.0,
+      ) as double);
 
   @override
   String get currencyCode => (super.noSuchMethod(
@@ -381,20 +472,5 @@ class MockProductDetails extends _i1.Mock implements _i2.ProductDetails {
           this,
           Invocation.getter(#currencySymbol),
         ),
-      ) as String);
-}
-
-/// A class which mocks [PlatformException].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockPlatformException extends _i1.Mock implements _i8.PlatformException {
-  MockPlatformException() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  String get code => (super.noSuchMethod(
-        Invocation.getter(#code),
-        returnValue: _i6.dummyValue<String>(this, Invocation.getter(#code)),
       ) as String);
 }

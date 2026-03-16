@@ -5,8 +5,8 @@
 library;
 
 import 'dart:async';
-import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:subman/src/models/server_client.dart';
@@ -18,24 +18,29 @@ class SubmanCore {
   SubmanCore._internal({
     SubscriptionServerClient? serverClient,
     InAppPurchase? iap,
+    TargetPlatform? platformOverride,
   })  : _serverClient = serverClient ?? DefaultServerClient(),
-        _iap = iap ?? InAppPurchase.instance;
+        _iap = iap ?? InAppPurchase.instance,
+        _platformOverride = platformOverride;
 
   static SubmanCore instance = SubmanCore._internal();
-
-  /// For testing purposes, allows overriding the default instance.
-  bool get _isTest => const bool.fromEnvironment('dart.vm.product') == false;
 
   /// Factory constructor for testing purposes.
   factory SubmanCore.test({
     required SubscriptionServerClient serverClient,
     InAppPurchase? iap,
+    TargetPlatform? platformOverride,
   }) {
-    return SubmanCore._internal(serverClient: serverClient, iap: iap);
+    return SubmanCore._internal(
+      serverClient: serverClient,
+      iap: iap,
+      platformOverride: platformOverride,
+    );
   }
 
   final SubscriptionServerClient _serverClient;
   final InAppPurchase _iap;
+  final TargetPlatform? _platformOverride;
 
   bool _isProcessing = false;
   List<ProductDetails> _products = [];
@@ -71,6 +76,13 @@ class SubmanCore {
 
   /// Callback invoked when an error occurs during purchase or restoration.
   void Function(SubscriptionException)? onError;
+
+  /// Returns the effective platform for this instance.
+  TargetPlatform get _effectivePlatform =>
+      _platformOverride ?? defaultTargetPlatform;
+
+  /// Returns true if this is running on iOS.
+  bool get _isIOS => _effectivePlatform == TargetPlatform.iOS;
 
   /// Initializes the in-app purchase system with the given product IDs.
   ///
@@ -120,8 +132,8 @@ class SubmanCore {
     }
 
     _subscription = _iap.purchaseStream.listen(
-      (purchases) => _handlePurchaseUpdates(purchases),
-      onError: (e) => _handleError(e),
+      _handlePurchaseUpdates,
+      onError: _handleError,
     );
   }
 
@@ -141,7 +153,7 @@ class SubmanCore {
         (sub) => sub.productId == productId,
       );
 
-      // If changing plan, fire a notification (optionally handle upgrade/downgrade)
+      // If changing plan, fire a notification
       if (!alreadySubscribed && _activeSubscriptions.isNotEmpty) {
         onError?.call(
           SubscriptionException(
@@ -149,7 +161,6 @@ class SubmanCore {
             'User is changing from ${_activeSubscriptions.first.productId} to $productId',
           ),
         );
-        // Optionally, you could handle upgrade/downgrade logic here
         if (_activeSubscriptions.length > 1) {
           onError?.call(
             SubscriptionException(
@@ -162,10 +173,7 @@ class SubmanCore {
         }
       }
 
-      late final PurchaseParam purchaseParam;
-      // Note: As of the latest in_app_purchase, offerToken is not directly supported.
-      purchaseParam = PurchaseParam(productDetails: product);
-
+      final purchaseParam = PurchaseParam(productDetails: product);
       await _iap.buyNonConsumable(purchaseParam: purchaseParam);
     } catch (e) {
       _handleError(e);
@@ -218,29 +226,24 @@ class SubmanCore {
           purchaseToken: purchase.verificationData.serverVerificationData,
           orderId: purchase.purchaseID ?? purchase.transactionDate ?? '',
           purchaseDate: purchaseDate,
-          platform: Platform.isIOS ? 'ios' : 'android',
+          platform: _isIOS ? 'ios' : 'android',
         );
 
         Map<String, dynamic> payload;
-        if (_isTest || Platform.isAndroid) {
-          // Use Android payload
+        if (_isIOS) {
+          payload = {'receipt': data.purchaseToken ?? '', 'platform': 'ios'};
+        } else {
           payload = {
             'purchaseToken': data.purchaseToken,
             'orderId': data.orderId,
             'productId': data.productId,
             'platform': 'android',
           };
-        } else if (Platform.isIOS) {
-          // Use iOS payload
-          payload = {'receipt': data.purchaseToken ?? '', 'platform': 'ios'};
-        } else {
-          payload = {};
         }
 
         final isValid = await _serverClient.verify(payload);
 
         if (isValid) {
-          // Always clear and replace active subscriptions to avoid duplicates/stale data
           _activeSubscriptions
             ..clear()
             ..add(data);
@@ -260,9 +263,14 @@ class SubmanCore {
           );
         }
 
-        _iap.completePurchase(purchase);
+        // Always complete the purchase to acknowledge it with the store
+        await _iap.completePurchase(purchase);
+      } else if (purchase.status == PurchaseStatus.pending) {
+        // Pending purchases are waiting for user action; do nothing
       } else if (purchase.status == PurchaseStatus.error) {
         _handleError(purchase.error);
+        // Complete the purchase to clear the error state from the store
+        await _iap.completePurchase(purchase);
       }
     }
   }
