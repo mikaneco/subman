@@ -4,7 +4,6 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:subman/src/models/server_client.dart';
 import 'package:subman/subman.dart';
 
 /// A sample implementation of a custom server verification client.
