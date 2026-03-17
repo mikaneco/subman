@@ -2,37 +2,55 @@
 
 [![pub package](https://img.shields.io/pub/v/subman.svg)](https://pub.dev/packages/subman)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Build](https://github.com/mikaneco/subman/actions/workflows/dart.yml/badge.svg)](https://github.com/mikaneco/subman/actions)  
+[![Build](https://github.com/mikaneco/subman/actions/workflows/dart.yml/badge.svg)](https://github.com/mikaneco/subman/actions)
 [![GitHub stars](https://img.shields.io/github/stars/mikaneco/subman.svg?style=social&label=Star)](https://github.com/mikaneco/subman)
 
-A simple, developer-friendly subscription management library for Flutter.  
+A simple, developer-friendly subscription management library for Flutter.
 Subman makes handling in-app subscriptions, restoration, and server-side validation effortless and robust for any Flutter project.
 
----
-
-## ✨ Features
-
-- 🪄 Simple initialization & purchase
-- 🔄 One-line restore for past subscriptions
-- 🟢 Real-time subscription status (via Stream)
-- ❗ Unified, user-friendly error handling
-- 🛠️ Plug-in server-side validation (with easy mocking for tests)
-- ⚡ Environment-aware (simulator, TestFlight, production…)
+**[Japanese / 日本語版はこちら](README_ja.md)**
 
 ---
 
-## 🚀 Getting Started
+## Features
+
+- Simple initialization & purchase API
+- One-line restore for past subscriptions
+- Real-time subscription status via Stream
+- Unified, user-friendly error handling
+- Plug-in server-side receipt/token validation (with easy mocking for tests)
+- Environment-aware (simulator, TestFlight, production, etc.)
+- Platform-independent core (testable without `dart:io`)
+
+---
+
+## Requirements
+
+| Requirement | Version |
+|---|---|
+| Dart SDK | >= 3.5.0 |
+| Flutter | >= 3.24.0 |
+
+---
+
+## Getting Started
 
 Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  subman: ^0.1.0
+  subman: ^1.0.0
+```
+
+Then run:
+
+```bash
+flutter pub get
 ```
 
 ---
 
-## 🛠️ Usage
+## Usage
 
 ### 1. Import
 
@@ -40,31 +58,24 @@ dependencies:
 import 'package:subman/subman.dart';
 ```
 
----
-
-### 2. Initialize Subman
+### 2. Initialize
 
 ```dart
 await Subman.init(
   productIds: ['monthly_subscription', 'yearly_subscription'],
   onPurchaseCompleted: (subscription) {
-    // Handle successful purchase
     print('Purchased: ${subscription.productId}');
   },
   onRestoreCompleted: (subscriptions) {
-    // Handle restored subscriptions
-    print('Restored: $subscriptions');
+    print('Restored: ${subscriptions.length} subscriptions');
   },
   onError: (exception) {
-    // Handle errors
     print('Error: ${exception.code} / ${exception.message}');
   },
   // Optional: inject your own server verification client
-  // serverClient: MyServerClient(), // implements SubscriptionServerClient
+  // serverClient: MyServerClient(),
 );
 ```
-
----
 
 ### 3. Purchase a subscription
 
@@ -72,155 +83,140 @@ await Subman.init(
 await Subman.purchase('monthly_subscription');
 ```
 
----
-
 ### 4. Restore previous subscriptions
 
 ```dart
 await Subman.restore();
 ```
 
----
-
-### 5. Access subscription status (for UI, business logic, etc.)
+### 5. Access subscription status
 
 ```dart
+// Check current state
 final isActive = Subman.isSubscribed;
 final current = Subman.currentSubscription;
 
+// Listen to real-time updates
 Subman.activeSubscriptionsStream.listen((subscriptions) {
-  // React to subscription updates!
+  // React to subscription changes
 });
 ```
 
----
-
-### 6. Advanced: Server-side verification
-
-By default, server validation does nothing.  
-To verify receipts/tokens on your own backend, implement `SubscriptionServerClient` and inject it:
+### 6. Clean up
 
 ```dart
-class MyServerClient implements SubscriptionServerClient {
-  @override
-  Future<bool> verify(Map<String, dynamic> payload) async {
-    // Send payload to your server, get validation result.
-    // return true if valid, false if not.
-  }
-}
-
-// Usage:
-await Subman.init(
-  productIds: [...],
-  onPurchaseCompleted: ...,
-  serverClient: MyServerClient(),
-);
+Subman.dispose();
 ```
 
 ---
 
-## 🏗️ Architecture & Core Logic
+## Server-Side Verification
 
-### Overview
-
-`subman` is built around a single core class, `SubmanCore`, which manages all subscription logic, state, and communication with both the in-app purchase plugins and your server. The public API (`Subman`) is a thin wrapper around this core.
-
-### Key Concepts
-
-- **Initialization**:  
-  `SubmanCore.initialize` sets up the in-app purchase system, queries available products, and listens for purchase updates.  
-  You must call `Subman.init(...)` before making purchases or restoring.
-
-- **Purchase Flow**:  
-  When you call `Subman.purchase(productId)`, the core checks for existing subscriptions, handles upgrades/downgrades, and starts the purchase flow using the in_app_purchase plugin.
-
-- **Restoration**:  
-  `Subman.restore()` triggers the plugin’s restore mechanism and updates the active subscription list.
-
-- **Server Validation**:  
-  After a purchase or restore, `subman` sends the receipt/token to your backend (via a `SubscriptionServerClient`) for validation.  
-  The result determines whether the subscription is considered active.
-
-- **State Management**:  
-  All active subscriptions are tracked in memory and exposed via:
-
-  - `Subman.isSubscribed`
-  - `Subman.currentSubscription`
-  - `Subman.activeSubscriptionsStream` (for real-time UI updates)
-
-- **Callbacks**:  
-  You can provide callbacks for:
-
-  - `onPurchaseCompleted`
-  - `onRestoreCompleted`
-  - `onError`
-    These are invoked at the appropriate time in the purchase/restore lifecycle.
-
-- **Error Handling**:  
-  All errors are wrapped in a `SubscriptionException` and passed to your `onError` callback.
-
-### Extensibility & Testing
-
-- **Server Validation**:  
-  You can inject your own server client by implementing `SubscriptionServerClient` and passing it to `Subman.init(serverClient: ...)`.  
-  This makes it easy to mock server responses in tests.
-
-- **Dependency Injection**:  
-  For testing, you can inject a mock `InAppPurchase` instance into `SubmanCore` using the `SubmanCore.test(...)` factory.
-
-- **Platform Awareness**:  
-  The core logic automatically detects the platform (iOS/Android) and builds the correct payload for server validation.
-
-### Example: Custom Server Validation
+By default, server validation uses a stub that returns `false`.
+To verify receipts/tokens on your own backend, implement `SubscriptionServerClient`:
 
 ```dart
 class MyServerClient implements SubscriptionServerClient {
   @override
   Future<bool> verify(Map<String, dynamic> payload) async {
-    // Send payload to your server, get validation result.
-    // return true if valid, false if not.
+    // iOS payload:  { 'receipt': '...', 'platform': 'ios' }
+    // Android payload: { 'purchaseToken': '...', 'orderId': '...', 'productId': '...', 'platform': 'android' }
+    final response = await http.post(Uri.parse('https://api.example.com/verify'), body: payload);
+    return response.statusCode == 200;
   }
 }
 
 await Subman.init(
   productIds: ['monthly', 'yearly'],
-  onPurchaseCompleted: ...,
   serverClient: MyServerClient(),
+  onPurchaseCompleted: (data) { /* ... */ },
 );
 ```
 
-### Example: Listening to Subscription Changes
+---
 
-```dart
-Subman.activeSubscriptionsStream.listen((subscriptions) {
-  // Update your UI or business logic
-});
-```
+## Architecture
 
-### Example: Testing with Mocks
+### Overview
 
-```dart
-final mockIap = MockInAppPurchase();
-final mockServer = MockServerClient();
-final core = SubmanCore.test(serverClient: mockServer, iap: mockIap);
+`subman` is built around `SubmanCore`, a singleton that manages all subscription logic, state, and communication with the in-app purchase plugins and your server. The public API (`Subman`) is a thin static wrapper around this core.
 
-// Now you can stub/mock plugin and server responses for unit tests!
-```
+### Key Concepts
+
+- **Initialization**: `Subman.init(...)` sets up the IAP system, queries available products, and listens for purchase updates.
+- **Purchase Flow**: `Subman.purchase(productId)` checks for existing subscriptions, handles upgrades/downgrades, and starts the purchase via the `in_app_purchase` plugin.
+- **Restoration**: `Subman.restore()` triggers the plugin's restore mechanism and updates the active subscription list.
+- **Server Validation**: After a purchase or restore, the receipt/token is sent to your backend via `SubscriptionServerClient`. The result determines whether the subscription is considered active.
+- **State Management**: Active subscriptions are tracked in memory and exposed via `isSubscribed`, `currentSubscription`, and `activeSubscriptionsStream`.
+- **Error Handling**: All errors are wrapped in `SubscriptionException` and passed to your `onError` callback.
+
+### Exported Types
+
+| Type | Description |
+|---|---|
+| `Subman` | Main static API for initialization, purchase, restore, and status |
+| `SubscriptionData` | Immutable data class representing a subscription (with JSON serialization) |
+| `SubscriptionException` | Unified error class with code and message |
+| `SubscriptionServerClient` | Interface for server-side receipt/token verification |
+| `SubscriptionState` | Enum for UI state (idle, loading, processing, purchased, restored, error) |
+| `SubscriptionStatus` | State container for use with Riverpod/Bloc |
+| `SubmanEnvironment` | Environment enum (simulator, deviceDebug, testflight, internalTest, production) |
 
 ---
 
-## 🧑‍💻 Example
+## Testing
 
-See [`example/main.dart`](example/lib/main.dart) for a full Flutter integration sample.
+`subman` is designed for testability. Platform detection uses `defaultTargetPlatform` instead of `dart:io`, so all logic can be tested without platform-specific workarounds.
+
+### Unit Testing with Mocks
+
+```dart
+import 'package:subman/subman.dart';
+import 'package:subman/src/subman_core.dart';
+
+// Create a mock server client
+class MockServerClient implements SubscriptionServerClient {
+  @override
+  Future<bool> verify(Map<String, dynamic> payload) async => true;
+}
+
+// Inject mocks into SubmanCore
+final core = SubmanCore.test(
+  serverClient: MockServerClient(),
+  iap: mockInAppPurchase,           // Mockito mock of InAppPurchase
+  platformOverride: TargetPlatform.iOS, // Override platform for testing
+);
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+flutter test
+
+# Run with coverage
+flutter test --coverage
+
+# Regenerate mocks (after changing mock annotations)
+dart run build_runner build --delete-conflicting-outputs
+```
+
+The test suite includes 45 tests covering:
+- Model serialization, equality, and copyWith
+- Exception conversion from PlatformException and IAPError
+- Core initialization (store unavailable, no products, success)
+- Purchase flow (valid/invalid receipts, iOS/Android payloads)
+- Restore flow and error handling
+- Stream emission and dispose behavior
+- Static facade API
 
 ---
 
-## ⚡️ Integration with Riverpod, Bloc, etc.
+## Integration with Riverpod / Bloc
 
-`subman` exports simple state classes (`SubscriptionState`, `SubscriptionStatus`)  
-so you can easily use them with Riverpod or Bloc for app-wide reactive subscription state management.
+`subman` exports `SubscriptionState` and `SubscriptionStatus` for easy integration with state management libraries.
 
-**Riverpod usage example:**
+**Riverpod example:**
 
 ```dart
 final subscriptionProvider =
@@ -236,13 +232,28 @@ if (status.state == SubscriptionState.purchased) {
 
 ---
 
-## 📚 Additional Information
+## Example
 
-- API Reference: [pub.dev/packages/subman]
+See [`example/main.dart`](example/lib/main.dart) for a full Flutter integration sample.
+
+---
+
+## Migration from 0.1.0
+
+- **SDK requirement**: Dart >= 3.5.0 / Flutter >= 3.24.0 (was Dart >= 3.0.0 / Flutter >= 3.0.0)
+- **Platform detection**: `dart:io` is no longer used internally. If you were relying on `SubmanCore.test()`, it now accepts an optional `platformOverride` parameter.
+- **New exports**: `SubscriptionServerClient` and `SubmanEnvironment` are now exported from `package:subman/subman.dart`. Remove any direct imports of `src/models/server_client.dart`.
+- **SubscriptionData equality**: `==` and `hashCode` are now implemented, so collections and comparisons work correctly.
+
+---
+
+## Additional Information
+
+- API Reference: [pub.dev/packages/subman](https://pub.dev/packages/subman)
 - Issues / Feedback: [GitHub Issues](https://github.com/mikaneco/subman/issues)
 - Contributions welcome!
 
 ---
 
-© 2025 mikaneco  
+(C) 2025 mikaneco
 MIT License.
